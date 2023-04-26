@@ -13,18 +13,20 @@ exports.mop = void 0;
 const console_1 = require("../helpers/console");
 const files_1 = require("../helpers/files");
 const humanize_1 = require("../helpers/humanize");
+const promise_pool_1 = require("@supercharge/promise-pool");
 function mop(node) {
     return __awaiter(this, void 0, void 0, function* () {
         let size = 0;
         (0, console_1.log)("yellow", `Looking for node_modules directories in ${node}`);
-        const dirs = yield (0, files_1.readDirs)(node);
         try {
-            yield Promise.all(dirs.map((dir) => {
-                (0, files_1.getSize)(dir).then((dirSize) => {
-                    size += dirSize;
-                    (0, files_1.rmdir)(dir);
-                    (0, console_1.log)("red", "DELETED", dir);
-                });
+            const dirs = yield (0, files_1.readDirs)(node);
+            yield promise_pool_1.PromisePool.withConcurrency(10)
+                .for(dirs)
+                .process((dir) => __awaiter(this, void 0, void 0, function* () {
+                const dirSize = yield (0, files_1.getSize)(dir);
+                size += dirSize;
+                (0, files_1.rmdir)(dir);
+                (0, console_1.log)("red", "DELETED", dir);
             }));
             (0, console_1.log)("green", "FINISHED", `${(0, humanize_1.bytesToHuman)(size)} removed`);
         }
