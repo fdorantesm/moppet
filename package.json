@@ -1,6 +1,6 @@
 {
   "name": "moppet",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A CLI tool to remove all deep node_modules from a directory",
   "main": "dist/index.js",
   "publishConfig": {
@@ -33,7 +33,7 @@
     "space"
   ],
   "author": "Fernando Dorantes <fernando@dorant.es>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@supercharge/promise-pool": "^2.4.0",
     "byte-size": "^8.1.0",
