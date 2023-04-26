@@ -1,36 +1,14 @@
 #!/usr/bin/env node
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const files_1 = require("./lib/helpers/files");
-const console_1 = require("./lib/helpers/console");
-const humanize_1 = require("./lib/helpers/humanize");
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        let size = 0;
-        const dirs = yield (0, files_1.readDirs)("**/node_modules");
-        (0, console_1.log)("yellow", "Looking for node_modules directories");
-        try {
-            yield Promise.all(dirs.map((dir) => __awaiter(this, void 0, void 0, function* () {
-                const dirSize = yield (0, files_1.getSize)(dir);
-                size += dirSize;
-                (0, files_1.rmdir)(dir);
-                (0, console_1.log)("red", "DELETED", dir);
-            })));
-            (0, console_1.log)("green", "FINISHED", `${(0, humanize_1.bytesToHuman)(size)} removed`);
-        }
-        catch (error) {
-            (0, console_1.log)("red", "ERROR", error.message);
-        }
-    });
+const commander_1 = require("commander");
+const mop_1 = require("./lib/commands/mop");
+const program = new commander_1.Command();
+program.option("-d, --dir <directory>");
+program.parse(process.argv);
+const options = program.opts();
+const directory = options.dir || ".";
+if (options.dir) {
+    (0, mop_1.mop)(`${directory}/**/node_modules`);
 }
-main();
 //# sourceMappingURL=index.js.map
